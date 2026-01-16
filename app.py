@@ -6,6 +6,11 @@ import streamlit as st
 
 MODEL_PATH=os.path.join(os.path.dirname(__file__), "SVC.joblib")
 
+@st.cache_resources
+def load_model():
+    return joblib.load("SVC.joblib")
+model=load_model()
+
 model=joblib.load("svc.joblib")
 
 st.set_page_config(
