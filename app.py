@@ -1,26 +1,28 @@
 import os
-import numpy as np 
-import pandas as pd 
-import joblib 
+import numpy as np
+import pandas as pd
+import joblib
 import streamlit as st
 
-MODEL_PATH=os.path.join(os.path.dirname(__file__), "SVC.joblib")
+# Absolute path to the model file (case-sensitive for deployment)
+MODEL_PATH = os.path.join(os.path.dirname(__file__), "SVC.joblib")
 
 @st.cache_resource
 def load_model():
-    return joblib.load("SVC.joblib")
-model=load_model()
+    return joblib.load(MODEL_PATH)
 
-model=joblib.load("svc.joblib")
+# Load model once
+model = load_model()
 
 st.set_page_config(
     page_title="CANCER DETECTION",
     layout="wide"
 )
-st.title("Breast cancer detection")
-st.write("predict is it **Malignant** or **Benign**")
 
-st.subheader("Enter features")
+st.title("Breast Cancer Detection")
+st.write("Predict whether the tumor is **Malignant** or **Benign**")
+
+st.subheader("Enter Features")
 
 col1, col2, col3 = st.columns(3)
 
@@ -60,9 +62,8 @@ with col3:
     symmetry_worst = st.number_input("Symmetry Worst", 0.0)
     fractal_dimension_worst = st.number_input("Fractal Dimension Worst", 0.0)
 
-
-if st.button("predict"):
-    input_data = np.array([[ 
+if st.button("Predict"):
+    input_data = np.array([[
         radius_mean, texture_mean, perimeter_mean, area_mean, smoothness_mean,
         compactness_mean, concavity_mean, concave_points_mean, symmetry_mean, fractal_dimension_mean,
         radius_se, texture_se, perimeter_se, area_se, smoothness_se,
@@ -70,10 +71,10 @@ if st.button("predict"):
         radius_worst, texture_worst, perimeter_worst, area_worst, smoothness_worst,
         compactness_worst, concavity_worst, concave_points_worst, symmetry_worst, fractal_dimension_worst
     ]])
-    prediction=model.predict(input_data)[0]
 
-    st.subheader("r")
-    if prediction==0:
-        st.error("CANCER")
+    prediction = model.predict(input_data)[0]
+
+    if prediction == 0:
+        st.error("CANCER (Malignant)")
     else:
-        st.success("NOT CANCER")
+        st.success("NOT CANCER (Benign)")
